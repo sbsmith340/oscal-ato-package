@@ -1,0 +1,85 @@
+# Plan of Action and Milestones. Every partial/planned control statement needs an item here.
+# risk: low | moderate | high
+
+items:
+  - id: POAM-001
+    title: Audit log retention below one-year requirement
+    controls: [AU-11]
+    weakness: Log Analytics retains logs for 90 days; the agency requires one year of retention for audit records.
+    risk: moderate
+    detected: "2026-09-15"
+    source: Control assessment (ISSO self-assessment)
+    remediation: Configure workspace archive tier to 365 days and export Sentinel tables to immutable storage.
+    milestones:
+      - {date: "2026-11-15", text: Archive policy designed and cost estimate approved}
+      - {date: "2026-12-15", text: Archive enabled and retention verified with a 120-day-old record query}
+    scheduled_completion: "2026-12-15"
+    owner: isso
+
+  - id: POAM-002
+    title: No automated configuration drift detection
+    controls: [CM-6]
+    weakness: Resources can be changed in the portal without detection until the next deployment overwrites them.
+    risk: moderate
+    detected: "2026-09-15"
+    source: Control assessment (ISSO self-assessment)
+    remediation: Add a scheduled pipeline job that runs an IaC plan against production and alerts on any difference; deny portal writes with Azure Policy.
+    milestones:
+      - {date: "2026-11-30", text: Nightly drift job running in non-production}
+      - {date: "2027-01-15", text: Drift alerts routed to Sentinel for production}
+    scheduled_completion: "2027-01-15"
+    owner: system-administrator
+
+  - id: POAM-003
+    title: Backup restore never tested
+    controls: [CP-9]
+    weakness: Database backups are enabled but recovery has not been demonstrated, so the recovery time objective is unverified.
+    risk: high
+    detected: "2026-09-22"
+    source: Contingency plan review
+    remediation: Perform and document a point-in-time restore to an isolated server; record actual recovery time against the 8-hour RTO.
+    milestones:
+      - {date: "2026-11-08", text: Restore test executed and results documented}
+    scheduled_completion: "2026-11-08"
+    owner: system-administrator
+
+  - id: POAM-004
+    title: Incident reporting to CISA not exercised
+    controls: [IR-6]
+    weakness: The external reporting procedure exists only as a draft and has not been tested in an exercise.
+    risk: moderate
+    detected: "2026-09-22"
+    source: Incident response plan review
+    remediation: Finalize the reporting procedure with the agency SOC and run a tabletop exercise that includes the reporting step.
+    milestones:
+      - {date: "2026-12-01", text: Procedure approved by agency SOC}
+      - {date: "2027-01-31", text: Tabletop exercise completed with after-action report}
+    scheduled_completion: "2027-01-31"
+    owner: isso
+
+  - id: POAM-005
+    title: No dependency or container scanning in the pipeline
+    controls: [RA-5]
+    weakness: Third-party libraries and container images are not scanned before deployment.
+    risk: moderate
+    detected: "2026-10-01"
+    source: Architecture review
+    remediation: Add software composition analysis and image scanning as required pipeline checks that block Critical findings.
+    milestones:
+      - {date: "2026-12-15", text: Scanning enabled in report-only mode}
+      - {date: "2027-02-15", text: Blocking enforced for Critical findings}
+    scheduled_completion: "2027-02-15"
+    owner: system-administrator
+
+  - id: POAM-006
+    title: Behavior analytics not enabled
+    controls: [SI-4]
+    weakness: Detection relies on scheduled rules only; anomalous but rule-evading behavior may go unnoticed.
+    risk: low
+    detected: "2026-10-01"
+    source: Architecture review
+    remediation: Enable Sentinel UEBA for Entra ID and Azure Activity data and add anomaly-based analytics to the daily review.
+    milestones:
+      - {date: "2027-03-31", text: UEBA enabled and baseline period complete}
+    scheduled_completion: "2027-03-31"
+    owner: isso

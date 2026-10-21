@@ -1,0 +1,206 @@
+# Control implementation statements (subset of the NIST SP 800-53 Rev 5 MODERATE baseline).
+# status per component: implemented | partial | planned | alternative | not-applicable
+# Anything partial or planned must have a matching POA&M item (enforced by tools/build.py).
+
+AC-2:
+  - component: entra-id
+    status: implemented
+    statement: >
+      Accounts are created only from approved access requests in the agency ticketing
+      system and provisioned to role-based Entra ID groups. Group membership is
+      reviewed quarterly through Entra ID Access Reviews by the System Owner; denied
+      or unreviewed access is removed automatically.
+  - component: this-system
+    status: implemented
+    statement: >
+      Application roles (Inspector, Facility Operator, Administrator) are mapped from
+      Entra ID group claims; the application holds no local accounts.
+
+AC-2(3):
+  - component: entra-id
+    status: implemented
+    statement: >
+      Accounts are disabled within 24 hours of a termination notice through HR-driven
+      lifecycle workflows, and accounts inactive for 90 days are disabled automatically.
+      Deprovisioning time is measured monthly against the 24-hour target.
+
+AC-6:
+  - component: entra-id
+    status: implemented
+    statement: >
+      Administrative roles are eligible-only in Privileged Identity Management with
+      approval, justification and a 4-hour maximum activation. No user holds standing
+      production database access.
+
+AC-17:
+  - component: entra-id
+    status: implemented
+    statement: >
+      Remote administrative access requires Conditional Access with phishing-resistant
+      MFA and an Intune-compliant device. No VPN or inbound RDP/SSH paths exist into
+      the boundary.
+
+AU-2:
+  - component: sentinel
+    status: implemented
+    statement: >
+      Diagnostic settings enforced by Azure Policy send App Service HTTP and audit logs,
+      SQL auditing, Key Vault audit events, Front Door WAF logs, Entra ID sign-in and
+      audit logs, and Azure Activity logs to the Log Analytics workspace.
+
+AU-6:
+  - component: sentinel
+    status: implemented
+    statement: >
+      Microsoft Sentinel analytics rules generate incidents for defined events
+      (privileged role activation outside PIM, mass deletion, WAF blocks above
+      threshold, failed sign-in bursts). The ISSO reviews open incidents daily and
+      produces a weekly audit review summary for the System Owner.
+
+AU-11:
+  - component: sentinel
+    status: partial
+    statement: >
+      Interactive retention is 90 days in Log Analytics. Long-term archive to meet the
+      agency's one-year retention requirement is not yet configured (see POA&M).
+
+CA-7:
+  - component: defender-cloud
+    status: implemented
+    statement: >
+      Defender for Cloud continuously assesses the subscription against the NIST SP
+      800-53 Rev 5 regulatory compliance standard. The ISSO reports compliance score,
+      open recommendations and POA&M status to the System Owner monthly.
+
+CM-6:
+  - component: pipeline
+    status: partial
+    statement: >
+      Configuration baselines are defined as infrastructure as code and deployed only
+      through the pipeline. Automated drift detection between deployed resources and
+      code is not yet in place (see POA&M).
+
+CM-7:
+  - component: app-service
+    status: implemented
+    statement: >
+      FTP/FTPS and remote debugging are disabled, HTTPS only is enforced, and only the
+      ports required by the application are exposed through Front Door.
+
+CM-8:
+  - component: this-system
+    status: implemented
+    statement: >
+      The system inventory is generated from Azure Resource Graph on each deployment and
+      reconciled monthly against the authorization boundary; untagged or unexpected
+      resources raise a Defender for Cloud recommendation.
+
+CP-9:
+  - component: azure-sql
+    status: partial
+    statement: >
+      Automated backups with point-in-time restore (35 days) and geo-redundant backup
+      storage are enabled. A documented restore test has not yet been performed
+      (see POA&M).
+
+IA-2(1):
+  - component: entra-id
+    status: implemented
+    statement: >
+      Conditional Access requires phishing-resistant MFA (FIDO2 security keys or
+      Windows Hello for Business) for all privileged accounts.
+
+IA-2(2):
+  - component: entra-id
+    status: implemented
+    statement: >
+      Conditional Access requires MFA for all non-privileged users; legacy
+      authentication protocols are blocked tenant-wide.
+
+IA-5:
+  - component: key-vault
+    status: implemented
+    statement: >
+      Application-to-service authentication uses managed identities, so no passwords
+      or connection strings are stored in code. Remaining secrets live in Key Vault
+      with RBAC, soft delete, purge protection and 90-day rotation.
+
+IR-4:
+  - component: sentinel
+    status: implemented
+    statement: >
+      Incidents are handled per the FIP Incident Response Plan (prepare, detect and
+      analyze, contain, eradicate, recover, post-incident review). Sentinel playbooks
+      automate enrichment and containment steps such as session revocation.
+
+IR-6:
+  - component: this-system
+    status: partial
+    statement: >
+      Suspected incidents are reported to the agency SOC within one hour of detection.
+      The procedure for reporting to US-CERT/CISA through the agency is drafted but not
+      yet exercised (see POA&M).
+
+RA-5:
+  - component: defender-cloud
+    status: implemented
+    statement: >
+      Defender Vulnerability Management scans hosts and Defender for SQL assesses the
+      database continuously. Remediation SLAs are Critical 15 days, High 30 days,
+      Moderate 90 days, tracked weekly.
+  - component: pipeline
+    status: planned
+    statement: >
+      Software composition analysis and container image scanning in the pipeline are
+      planned (see POA&M).
+
+SC-7:
+  - component: front-door
+    status: implemented
+    statement: >
+      Front Door with WAF (managed rule set, prevention mode) is the only public entry
+      point. App Service access restrictions accept traffic only from the Front Door
+      service tag with the instance's header ID.
+  - component: azure-sql
+    status: implemented
+    statement: >
+      Public network access is disabled; the database is reachable only through a
+      private endpoint in the application virtual network.
+
+SC-8:
+  - component: app-service
+    status: implemented
+    statement: HTTPS only with minimum TLS 1.2 is enforced end to end, from client to Front Door to App Service.
+
+SC-13:
+  - component: key-vault
+    status: implemented
+    statement: >
+      Cryptographic operations use FIPS 140-validated modules provided by the Azure
+      platform; keys are RSA 3072 or stronger.
+
+SC-28:
+  - component: azure-sql
+    status: implemented
+    statement: >
+      Transparent Data Encryption uses a customer-managed key held in Key Vault with
+      automatic rotation. Storage accounts use platform encryption with infrastructure
+      encryption enabled.
+
+SI-2:
+  - component: app-service
+    status: implemented
+    statement: >
+      Platform patching is performed by Azure. Application dependencies are updated
+      through Dependabot pull requests; Critical and High fixes follow the RA-5 SLAs.
+
+SI-4:
+  - component: sentinel
+    status: implemented
+    statement: >
+      Sentinel monitors identity, platform and application telemetry with scheduled
+      analytics rules mapped to MITRE ATT&CK; Defender for Cloud workload protections
+      provide threat detection for App Service, SQL and Key Vault.
+  - component: sentinel
+    status: planned
+    statement: User and entity behavior analytics (UEBA) for anomaly detection is planned (see POA&M).
