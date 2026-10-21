@@ -1,0 +1,694 @@
+{
+  "system-security-plan": {
+    "uuid": "b74bb353-d0a9-5017-97e5-2d2524d8bde5",
+    "metadata": {
+      "title": "Field Inspection Portal System Security Plan",
+      "last-modified": "2026-10-21T00:00:00Z",
+      "version": "1.0",
+      "oscal-version": "1.1.2",
+      "roles": [
+        {
+          "id": "system-owner",
+          "title": "System Owner"
+        },
+        {
+          "id": "authorizing-official",
+          "title": "Authorizing Official"
+        },
+        {
+          "id": "isso",
+          "title": "Information System Security Officer"
+        },
+        {
+          "id": "system-administrator",
+          "title": "System Administrator"
+        },
+        {
+          "id": "inspector",
+          "title": "Inspector (end user)"
+        },
+        {
+          "id": "facility-operator",
+          "title": "Facility Operator (external user)"
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "e06e25d6-4249-51f6-b043-7308c9d6fcea",
+          "type": "organization",
+          "name": "Office of Facility Standards (fictional agency)"
+        },
+        {
+          "uuid": "e6ccd60a-70cb-5b75-bf72-1eea412f663f",
+          "type": "organization",
+          "name": "Fabrikam Digital Services (fictional contractor)"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "system-owner",
+          "party-uuids": [
+            "e06e25d6-4249-51f6-b043-7308c9d6fcea"
+          ]
+        },
+        {
+          "role-id": "authorizing-official",
+          "party-uuids": [
+            "e06e25d6-4249-51f6-b043-7308c9d6fcea"
+          ]
+        },
+        {
+          "role-id": "isso",
+          "party-uuids": [
+            "e6ccd60a-70cb-5b75-bf72-1eea412f663f"
+          ]
+        },
+        {
+          "role-id": "system-administrator",
+          "party-uuids": [
+            "e6ccd60a-70cb-5b75-bf72-1eea412f663f"
+          ]
+        }
+      ],
+      "remarks": "Fictional system created for a portfolio demonstration. Not an actual federal system."
+    },
+    "import-profile": {
+      "href": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline_profile.json"
+    },
+    "system-characteristics": {
+      "system-ids": [
+        {
+          "identifier-type": "https://ietf.org/rfc/rfc4122",
+          "id": "b70f730f-4231-51ea-b461-3a487f1a9263"
+        }
+      ],
+      "system-name": "Field Inspection Portal",
+      "system-name-short": "FIP",
+      "description": "The Field Inspection Portal (FIP) lets inspectors of the (fictional) Office of Facility Standards schedule site inspections, record findings on mobile devices, and publish compliance letters to facility operators. It is a multi-tier web application hosted in a commercial Azure region and operated by Fabrikam Digital Services under contract.",
+      "security-sensitivity-level": "fips-199-moderate",
+      "system-information": {
+        "information-types": [
+          {
+            "uuid": "23119d61-62ec-5e03-a3d2-c302fa5e09df",
+            "title": "Inspection Records",
+            "description": "Findings, photos and inspector notes for facility site inspections.",
+            "confidentiality-impact": {
+              "base": "fips-199-moderate"
+            },
+            "integrity-impact": {
+              "base": "fips-199-moderate"
+            },
+            "availability-impact": {
+              "base": "fips-199-low"
+            }
+          },
+          {
+            "uuid": "396590ac-afce-5873-88ac-840e9c538bb0",
+            "title": "Facility Operator Contact Information (PII)",
+            "description": "Names, business addresses, phone numbers and email of facility contacts.",
+            "confidentiality-impact": {
+              "base": "fips-199-moderate"
+            },
+            "integrity-impact": {
+              "base": "fips-199-moderate"
+            },
+            "availability-impact": {
+              "base": "fips-199-low"
+            }
+          },
+          {
+            "uuid": "b02edfcd-418d-5592-936b-afc87f199493",
+            "title": "Compliance Determinations",
+            "description": "Official compliance letters and enforcement status published to operators.",
+            "confidentiality-impact": {
+              "base": "fips-199-low"
+            },
+            "integrity-impact": {
+              "base": "fips-199-moderate"
+            },
+            "availability-impact": {
+              "base": "fips-199-moderate"
+            }
+          },
+          {
+            "uuid": "d4d79455-f1f6-548e-8dcc-37c17f5bbaa7",
+            "title": "Security and Audit Data",
+            "description": "Authentication logs, audit trails, configuration and vulnerability data.",
+            "confidentiality-impact": {
+              "base": "fips-199-moderate"
+            },
+            "integrity-impact": {
+              "base": "fips-199-moderate"
+            },
+            "availability-impact": {
+              "base": "fips-199-low"
+            }
+          }
+        ]
+      },
+      "security-impact-level": {
+        "security-objective-confidentiality": "fips-199-moderate",
+        "security-objective-integrity": "fips-199-moderate",
+        "security-objective-availability": "fips-199-moderate"
+      },
+      "status": {
+        "state": "under-development"
+      },
+      "authorization-boundary": {
+        "description": "The authorization boundary contains the FIP web front end (Azure App Service), the API tier (Azure App Service), the Azure SQL Database holding inspection records, the Azure Key Vault holding application secrets and keys, the Azure Front Door instance with Web Application Firewall, and the administrative workstations used to operate the system. Microsoft Entra ID, Azure platform services, Microsoft Sentinel and Defender for Cloud are external, FedRAMP authorized services leveraged by the system and are outside the boundary."
+      },
+      "network-architecture": {
+        "description": "All inbound traffic terminates at Azure Front Door (WAF in prevention mode). The web and API tiers are reachable only from Front Door via service tags and access restrictions. The database and Key Vault expose private endpoints only; public network access is disabled. Administrative access uses Entra ID Privileged Identity Management and Intune-compliant workstations; there is no inbound RDP or SSH."
+      },
+      "data-flow": {
+        "description": "Inspectors authenticate through Entra ID (phishing-resistant MFA), submit findings over TLS 1.2+ to the API tier, which writes to Azure SQL. Facility operators receive compliance letters through an authenticated portal view. All platform and application logs stream to a Log Analytics workspace that feeds Microsoft Sentinel."
+      }
+    },
+    "system-implementation": {
+      "users": [
+        {
+          "uuid": "b1daf552-b3ce-5244-b187-d337887d6984",
+          "title": "Inspector",
+          "role-ids": [
+            "inspector"
+          ],
+          "authorized-privileges": [
+            {
+              "title": "Create and edit own inspection records",
+              "functions-performed": [
+                "Create and edit own inspection records"
+              ]
+            },
+            {
+              "title": "View assigned facilities",
+              "functions-performed": [
+                "View assigned facilities"
+              ]
+            }
+          ]
+        },
+        {
+          "uuid": "67141edd-337d-599b-9769-bbfd9d7cb70d",
+          "title": "Facility Operator",
+          "role-ids": [
+            "facility-operator"
+          ],
+          "authorized-privileges": [
+            {
+              "title": "View own facility's compliance letters",
+              "functions-performed": [
+                "View own facility's compliance letters"
+              ]
+            }
+          ]
+        },
+        {
+          "uuid": "c54ed44c-8c66-51ad-87fc-bec572f0b956",
+          "title": "System Administrator",
+          "role-ids": [
+            "system-administrator"
+          ],
+          "authorized-privileges": [
+            {
+              "title": "Manage application configuration through PIM-activated roles",
+              "functions-performed": [
+                "Manage application configuration through PIM-activated roles"
+              ]
+            },
+            {
+              "title": "No standing access to production data",
+              "functions-performed": [
+                "No standing access to production data"
+              ]
+            }
+          ]
+        }
+      ],
+      "components": [
+        {
+          "uuid": "7d48db19-df31-5027-8052-195715d4a9a7",
+          "type": "this-system",
+          "title": "Field Inspection Portal",
+          "description": "The system as a whole.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+          "type": "service",
+          "title": "Microsoft Entra ID (leveraged)",
+          "description": "Identity provider - SSO, Conditional Access, PIM. External FedRAMP authorized service.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "4dfce83a-2f29-5754-9e79-f94c1e756d5d",
+          "type": "service",
+          "title": "Azure App Service (web and API tiers)",
+          "description": "Hosts the FIP web front end and API. Managed identity, HTTPS only, minimum TLS 1.2.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "2cf28f0e-3e44-597a-9c79-b9f11bf40510",
+          "type": "service",
+          "title": "Azure SQL Database",
+          "description": "Stores inspection records. Private endpoint only, TDE with customer-managed key.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "5ab9f40e-ee0b-5611-8bd9-c6b8e2f37d81",
+          "type": "service",
+          "title": "Azure Key Vault",
+          "description": "Holds secrets and the customer-managed encryption key. RBAC, purge protection.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "d0e3a360-8dc1-5a35-bd55-85289aa02ed3",
+          "type": "service",
+          "title": "Azure Front Door with WAF",
+          "description": "Single public entry point. Managed rule set in prevention mode.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+          "type": "service",
+          "title": "Log Analytics and Microsoft Sentinel (leveraged)",
+          "description": "Central log collection, analytics rules, incident management.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "cb6668c7-6abb-5a11-a89e-984e86f352bb",
+          "type": "service",
+          "title": "Microsoft Defender for Cloud (leveraged)",
+          "description": "Posture management, vulnerability assessment, regulatory compliance dashboard.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "55b95494-6bb9-5bbf-93c0-7c248b1430dc",
+          "type": "hardware",
+          "title": "Administrative workstations",
+          "description": "Intune-managed, compliant devices required by Conditional Access for admin roles.",
+          "status": {
+            "state": "operational"
+          }
+        },
+        {
+          "uuid": "c4cb9dae-c2d0-5a2d-8447-53235e73e136",
+          "type": "software",
+          "title": "CI/CD pipeline (GitHub Actions)",
+          "description": "Builds and deploys infrastructure as code and application releases with required reviews.",
+          "status": {
+            "state": "operational"
+          }
+        }
+      ]
+    },
+    "control-implementation": {
+      "description": "Implementation of a representative subset of the NIST SP 800-53 Rev 5 MODERATE baseline. Partial and planned items are tracked in the POA&M.",
+      "implemented-requirements": [
+        {
+          "uuid": "0c7279e5-3e7e-5d23-81d7-bcdd2ca9ea40",
+          "control-id": "ac-2",
+          "by-components": [
+            {
+              "component-uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+              "uuid": "9e973e23-2f47-59fb-9bd0-aa567512cec0",
+              "description": "Accounts are created only from approved access requests in the agency ticketing system and provisioned to role-based Entra ID groups. Group membership is reviewed quarterly through Entra ID Access Reviews by the System Owner; denied or unreviewed access is removed automatically.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            },
+            {
+              "component-uuid": "7d48db19-df31-5027-8052-195715d4a9a7",
+              "uuid": "101f5eb2-70e2-514b-a70c-e7137876749d",
+              "description": "Application roles (Inspector, Facility Operator, Administrator) are mapped from Entra ID group claims; the application holds no local accounts.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "ae24e78e-933a-53a0-9805-55621fe6192a",
+          "control-id": "ac-2.3",
+          "by-components": [
+            {
+              "component-uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+              "uuid": "497c9658-3035-5419-905b-5cc5842194c2",
+              "description": "Accounts are disabled within 24 hours of a termination notice through HR-driven lifecycle workflows, and accounts inactive for 90 days are disabled automatically. Deprovisioning time is measured monthly against the 24-hour target.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "bb0b19ab-94ca-502f-9592-c0a72f36fddb",
+          "control-id": "ac-6",
+          "by-components": [
+            {
+              "component-uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+              "uuid": "79cb9975-ba33-5100-86b4-587aed3bd519",
+              "description": "Administrative roles are eligible-only in Privileged Identity Management with approval, justification and a 4-hour maximum activation. No user holds standing production database access.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "e46d3ca1-6ac0-54b9-82e2-8e24dc4b8dce",
+          "control-id": "ac-17",
+          "by-components": [
+            {
+              "component-uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+              "uuid": "b1c9691d-f32e-5c0b-814d-87d45269963c",
+              "description": "Remote administrative access requires Conditional Access with phishing-resistant MFA and an Intune-compliant device. No VPN or inbound RDP/SSH paths exist into the boundary.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "71194902-bbde-5547-8167-ff8c654c61e2",
+          "control-id": "au-2",
+          "by-components": [
+            {
+              "component-uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+              "uuid": "112c6af9-f47e-5a33-80b1-ae7b7a18c860",
+              "description": "Diagnostic settings enforced by Azure Policy send App Service HTTP and audit logs, SQL auditing, Key Vault audit events, Front Door WAF logs, Entra ID sign-in and audit logs, and Azure Activity logs to the Log Analytics workspace.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "28e23325-2537-5fd2-b83d-6bb4b8afe981",
+          "control-id": "au-6",
+          "by-components": [
+            {
+              "component-uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+              "uuid": "135618ad-4857-5fa0-9092-6055123a7b98",
+              "description": "Microsoft Sentinel analytics rules generate incidents for defined events (privileged role activation outside PIM, mass deletion, WAF blocks above threshold, failed sign-in bursts). The ISSO reviews open incidents daily and produces a weekly audit review summary for the System Owner.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "8151c135-ec99-53a7-9ea1-51f962697dc7",
+          "control-id": "au-11",
+          "by-components": [
+            {
+              "component-uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+              "uuid": "6f0ce436-ea21-59ce-b1d3-3b3b04d88797",
+              "description": "Interactive retention is 90 days in Log Analytics. Long-term archive to meet the agency's one-year retention requirement is not yet configured (see POA&M).",
+              "implementation-status": {
+                "state": "partial"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "a4dfc654-7ff9-5d3a-b67b-b02e49d96b22",
+          "control-id": "ca-7",
+          "by-components": [
+            {
+              "component-uuid": "cb6668c7-6abb-5a11-a89e-984e86f352bb",
+              "uuid": "5a55a092-7daa-578a-8055-900af753ad53",
+              "description": "Defender for Cloud continuously assesses the subscription against the NIST SP 800-53 Rev 5 regulatory compliance standard. The ISSO reports compliance score, open recommendations and POA&M status to the System Owner monthly.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "15ecd2f6-e397-5702-841f-c786813291c1",
+          "control-id": "cm-6",
+          "by-components": [
+            {
+              "component-uuid": "c4cb9dae-c2d0-5a2d-8447-53235e73e136",
+              "uuid": "a7294587-c2ea-5f32-b041-bcff14ea8f02",
+              "description": "Configuration baselines are defined as infrastructure as code and deployed only through the pipeline. Automated drift detection between deployed resources and code is not yet in place (see POA&M).",
+              "implementation-status": {
+                "state": "partial"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "41d12644-e68f-5fdb-9d48-6f26ebf3fc9f",
+          "control-id": "cm-7",
+          "by-components": [
+            {
+              "component-uuid": "4dfce83a-2f29-5754-9e79-f94c1e756d5d",
+              "uuid": "1dc2effc-0c9f-5ba2-ac1d-9bc03d1d3beb",
+              "description": "FTP/FTPS and remote debugging are disabled, HTTPS only is enforced, and only the ports required by the application are exposed through Front Door.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "7f601451-83ce-5f72-8ee6-c9ee145d278d",
+          "control-id": "cm-8",
+          "by-components": [
+            {
+              "component-uuid": "7d48db19-df31-5027-8052-195715d4a9a7",
+              "uuid": "a39a6b6e-0785-5232-a067-b8e6f39a5fb0",
+              "description": "The system inventory is generated from Azure Resource Graph on each deployment and reconciled monthly against the authorization boundary; untagged or unexpected resources raise a Defender for Cloud recommendation.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "b1f38395-74d1-58e6-bf17-95ddc059a6dd",
+          "control-id": "cp-9",
+          "by-components": [
+            {
+              "component-uuid": "2cf28f0e-3e44-597a-9c79-b9f11bf40510",
+              "uuid": "56e9ea17-bb6b-5491-90c7-cf3572ed0673",
+              "description": "Automated backups with point-in-time restore (35 days) and geo-redundant backup storage are enabled. A documented restore test has not yet been performed (see POA&M).",
+              "implementation-status": {
+                "state": "partial"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "b6a3469a-12a1-53cc-a9a3-a9d96adb459b",
+          "control-id": "ia-2.1",
+          "by-components": [
+            {
+              "component-uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+              "uuid": "5204cf12-892b-528d-a2bc-8f91352e5646",
+              "description": "Conditional Access requires phishing-resistant MFA (FIDO2 security keys or Windows Hello for Business) for all privileged accounts.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "fc0b3cec-094f-5996-984e-4c2bb4828301",
+          "control-id": "ia-2.2",
+          "by-components": [
+            {
+              "component-uuid": "4cc02062-e1d8-5e58-aaa9-3f2932d8428b",
+              "uuid": "b90a5964-484c-5bd5-a3d8-121e192c3a9d",
+              "description": "Conditional Access requires MFA for all non-privileged users; legacy authentication protocols are blocked tenant-wide.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "963cd4d0-7eda-5eea-b40f-e2402c6c2ea5",
+          "control-id": "ia-5",
+          "by-components": [
+            {
+              "component-uuid": "5ab9f40e-ee0b-5611-8bd9-c6b8e2f37d81",
+              "uuid": "6dcf32b1-72b3-5c26-9446-ccdcedce4a39",
+              "description": "Application-to-service authentication uses managed identities, so no passwords or connection strings are stored in code. Remaining secrets live in Key Vault with RBAC, soft delete, purge protection and 90-day rotation.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "b061422d-42ac-59f5-947a-5dc04984b636",
+          "control-id": "ir-4",
+          "by-components": [
+            {
+              "component-uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+              "uuid": "04b8a026-58c9-5748-bb8d-736660f99a72",
+              "description": "Incidents are handled per the FIP Incident Response Plan (prepare, detect and analyze, contain, eradicate, recover, post-incident review). Sentinel playbooks automate enrichment and containment steps such as session revocation.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "3ecc6020-7ec8-5a79-b751-7ff60f21d399",
+          "control-id": "ir-6",
+          "by-components": [
+            {
+              "component-uuid": "7d48db19-df31-5027-8052-195715d4a9a7",
+              "uuid": "bca58aa6-b443-5483-8c7b-5e1b3dbcffd8",
+              "description": "Suspected incidents are reported to the agency SOC within one hour of detection. The procedure for reporting to US-CERT/CISA through the agency is drafted but not yet exercised (see POA&M).",
+              "implementation-status": {
+                "state": "partial"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "ddb2f648-747d-53f9-8ec6-831cdb304ba1",
+          "control-id": "ra-5",
+          "by-components": [
+            {
+              "component-uuid": "cb6668c7-6abb-5a11-a89e-984e86f352bb",
+              "uuid": "3dc9ef18-125c-56f3-901e-b2b75f3708f2",
+              "description": "Defender Vulnerability Management scans hosts and Defender for SQL assesses the database continuously. Remediation SLAs are Critical 15 days, High 30 days, Moderate 90 days, tracked weekly.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            },
+            {
+              "component-uuid": "c4cb9dae-c2d0-5a2d-8447-53235e73e136",
+              "uuid": "321e46fd-2be3-5889-b7a4-44177c6a093e",
+              "description": "Software composition analysis and container image scanning in the pipeline are planned (see POA&M).",
+              "implementation-status": {
+                "state": "planned"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "a034820b-7dac-579d-8891-f39b07ecfaa2",
+          "control-id": "sc-7",
+          "by-components": [
+            {
+              "component-uuid": "d0e3a360-8dc1-5a35-bd55-85289aa02ed3",
+              "uuid": "689e2305-900a-51f0-93ab-16b619a6b969",
+              "description": "Front Door with WAF (managed rule set, prevention mode) is the only public entry point. App Service access restrictions accept traffic only from the Front Door service tag with the instance's header ID.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            },
+            {
+              "component-uuid": "2cf28f0e-3e44-597a-9c79-b9f11bf40510",
+              "uuid": "3774425a-b850-5d19-b858-3b04b76f6b88",
+              "description": "Public network access is disabled; the database is reachable only through a private endpoint in the application virtual network.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "f34dae2d-2abb-556d-96b3-6169a8bd3903",
+          "control-id": "sc-8",
+          "by-components": [
+            {
+              "component-uuid": "4dfce83a-2f29-5754-9e79-f94c1e756d5d",
+              "uuid": "68b80bba-628a-5e58-a6cd-94809e6c190f",
+              "description": "HTTPS only with minimum TLS 1.2 is enforced end to end, from client to Front Door to App Service.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "c611ffbf-4403-52af-a8e7-eb2463db0cfe",
+          "control-id": "sc-13",
+          "by-components": [
+            {
+              "component-uuid": "5ab9f40e-ee0b-5611-8bd9-c6b8e2f37d81",
+              "uuid": "a4917f7d-04ef-53a9-9d7d-341f689fd071",
+              "description": "Cryptographic operations use FIPS 140-validated modules provided by the Azure platform; keys are RSA 3072 or stronger.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "554e63c9-a91f-5e3b-98a5-df186fe79e71",
+          "control-id": "sc-28",
+          "by-components": [
+            {
+              "component-uuid": "2cf28f0e-3e44-597a-9c79-b9f11bf40510",
+              "uuid": "5583f9cf-8d5c-5c69-b25a-195c5dcb846f",
+              "description": "Transparent Data Encryption uses a customer-managed key held in Key Vault with automatic rotation. Storage accounts use platform encryption with infrastructure encryption enabled.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "7bf222a6-ba43-5726-8a65-a1f1570d7944",
+          "control-id": "si-2",
+          "by-components": [
+            {
+              "component-uuid": "4dfce83a-2f29-5754-9e79-f94c1e756d5d",
+              "uuid": "b4189a00-7aed-5a9f-8c55-2944e7953b32",
+              "description": "Platform patching is performed by Azure. Application dependencies are updated through Dependabot pull requests; Critical and High fixes follow the RA-5 SLAs.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            }
+          ]
+        },
+        {
+          "uuid": "da03a769-8f5a-5be5-81f4-1dfda6b34103",
+          "control-id": "si-4",
+          "by-components": [
+            {
+              "component-uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+              "uuid": "63b2fc71-374d-59a2-a92d-c60b0247f1c1",
+              "description": "Sentinel monitors identity, platform and application telemetry with scheduled analytics rules mapped to MITRE ATT&CK; Defender for Cloud workload protections provide threat detection for App Service, SQL and Key Vault.",
+              "implementation-status": {
+                "state": "implemented"
+              }
+            },
+            {
+              "component-uuid": "3b96e135-11fc-590f-9878-7425f132961a",
+              "uuid": "1265c2f2-a9af-5e06-84cd-1f3aa4b094c8",
+              "description": "User and entity behavior analytics (UEBA) for anomaly detection is planned (see POA&M).",
+              "implementation-status": {
+                "state": "planned"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

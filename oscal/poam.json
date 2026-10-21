@@ -1,0 +1,515 @@
+{
+  "plan-of-action-and-milestones": {
+    "uuid": "0b67b30e-b423-50c9-99f4-2a9951bf6dcb",
+    "metadata": {
+      "title": "Field Inspection Portal Plan of Action and Milestones",
+      "last-modified": "2026-10-21T00:00:00Z",
+      "version": "1.0",
+      "oscal-version": "1.1.2",
+      "remarks": "Fictional system created for a portfolio demonstration."
+    },
+    "import-ssp": {
+      "href": "ssp.json"
+    },
+    "system-id": {
+      "identifier-type": "https://ietf.org/rfc/rfc4122",
+      "id": "b70f730f-4231-51ea-b461-3a487f1a9263"
+    },
+    "observations": [
+      {
+        "uuid": "1706671c-f238-5042-b838-8d2473986a6e",
+        "title": "Audit log retention below one-year requirement",
+        "description": "Log Analytics retains logs for 90 days; the agency requires one year of retention for audit records.",
+        "methods": [
+          "EXAMINE"
+        ],
+        "types": [
+          "finding"
+        ],
+        "collected": "2026-09-15T00:00:00Z",
+        "remarks": "Source: Control assessment (ISSO self-assessment)"
+      },
+      {
+        "uuid": "cad363e9-a7ad-5a0a-95ff-d98929554666",
+        "title": "No automated configuration drift detection",
+        "description": "Resources can be changed in the portal without detection until the next deployment overwrites them.",
+        "methods": [
+          "EXAMINE"
+        ],
+        "types": [
+          "finding"
+        ],
+        "collected": "2026-09-15T00:00:00Z",
+        "remarks": "Source: Control assessment (ISSO self-assessment)"
+      },
+      {
+        "uuid": "91a689ba-97d4-50be-99e1-cc41f816861e",
+        "title": "Backup restore never tested",
+        "description": "Database backups are enabled but recovery has not been demonstrated, so the recovery time objective is unverified.",
+        "methods": [
+          "EXAMINE"
+        ],
+        "types": [
+          "finding"
+        ],
+        "collected": "2026-09-22T00:00:00Z",
+        "remarks": "Source: Contingency plan review"
+      },
+      {
+        "uuid": "9991bd54-7757-5e90-b097-848e3f551d4b",
+        "title": "Incident reporting to CISA not exercised",
+        "description": "The external reporting procedure exists only as a draft and has not been tested in an exercise.",
+        "methods": [
+          "EXAMINE"
+        ],
+        "types": [
+          "finding"
+        ],
+        "collected": "2026-09-22T00:00:00Z",
+        "remarks": "Source: Incident response plan review"
+      },
+      {
+        "uuid": "7d489ba8-499f-53d5-9b3a-86597a6e054e",
+        "title": "No dependency or container scanning in the pipeline",
+        "description": "Third-party libraries and container images are not scanned before deployment.",
+        "methods": [
+          "EXAMINE"
+        ],
+        "types": [
+          "finding"
+        ],
+        "collected": "2026-10-01T00:00:00Z",
+        "remarks": "Source: Architecture review"
+      },
+      {
+        "uuid": "2106a475-c0ef-54e5-9d04-9d50e51c6bf5",
+        "title": "Behavior analytics not enabled",
+        "description": "Detection relies on scheduled rules only; anomalous but rule-evading behavior may go unnoticed.",
+        "methods": [
+          "EXAMINE"
+        ],
+        "types": [
+          "finding"
+        ],
+        "collected": "2026-10-01T00:00:00Z",
+        "remarks": "Source: Architecture review"
+      }
+    ],
+    "risks": [
+      {
+        "uuid": "9048b5cd-7097-5679-9905-8333751fff7b",
+        "title": "Audit log retention below one-year requirement",
+        "description": "Log Analytics retains logs for 90 days; the agency requires one year of retention for audit records.",
+        "statement": "Affects AU-11. Risk rated moderate.",
+        "props": [
+          {
+            "name": "risk-level",
+            "value": "moderate"
+          }
+        ],
+        "status": "open",
+        "deadline": "2026-12-15T00:00:00Z",
+        "remediations": [
+          {
+            "uuid": "9baf5bbf-cba8-5de2-9b5a-bcce091b25dd",
+            "lifecycle": "planned",
+            "title": "Planned remediation",
+            "description": "Configure workspace archive tier to 365 days and export Sentinel tables to immutable storage.",
+            "tasks": [
+              {
+                "uuid": "0c89993d-d849-580a-aabb-edaaae77f29b",
+                "type": "milestone",
+                "title": "Archive policy designed and cost estimate approved",
+                "timing": {
+                  "on-date": {
+                    "date": "2026-11-15T00:00:00Z"
+                  }
+                }
+              },
+              {
+                "uuid": "8cb2a5d4-792d-5847-a046-c53a4c24def3",
+                "type": "milestone",
+                "title": "Archive enabled and retention verified with a 120-day-old record query",
+                "timing": {
+                  "on-date": {
+                    "date": "2026-12-15T00:00:00Z"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "1706671c-f238-5042-b838-8d2473986a6e"
+          }
+        ]
+      },
+      {
+        "uuid": "58614b22-838f-56dd-8039-4dca35835410",
+        "title": "No automated configuration drift detection",
+        "description": "Resources can be changed in the portal without detection until the next deployment overwrites them.",
+        "statement": "Affects CM-6. Risk rated moderate.",
+        "props": [
+          {
+            "name": "risk-level",
+            "value": "moderate"
+          }
+        ],
+        "status": "open",
+        "deadline": "2027-01-15T00:00:00Z",
+        "remediations": [
+          {
+            "uuid": "435136f0-1da2-5250-9209-a7bd67712eb6",
+            "lifecycle": "planned",
+            "title": "Planned remediation",
+            "description": "Add a scheduled pipeline job that runs an IaC plan against production and alerts on any difference; deny portal writes with Azure Policy.",
+            "tasks": [
+              {
+                "uuid": "816dcc42-6e05-5c05-988b-afb9807351d6",
+                "type": "milestone",
+                "title": "Nightly drift job running in non-production",
+                "timing": {
+                  "on-date": {
+                    "date": "2026-11-30T00:00:00Z"
+                  }
+                }
+              },
+              {
+                "uuid": "844db274-fd9e-5ba4-b011-077705d3ac72",
+                "type": "milestone",
+                "title": "Drift alerts routed to Sentinel for production",
+                "timing": {
+                  "on-date": {
+                    "date": "2027-01-15T00:00:00Z"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "cad363e9-a7ad-5a0a-95ff-d98929554666"
+          }
+        ]
+      },
+      {
+        "uuid": "ce39d573-53d0-5c83-a847-ceec07dc04b9",
+        "title": "Backup restore never tested",
+        "description": "Database backups are enabled but recovery has not been demonstrated, so the recovery time objective is unverified.",
+        "statement": "Affects CP-9. Risk rated high.",
+        "props": [
+          {
+            "name": "risk-level",
+            "value": "high"
+          }
+        ],
+        "status": "open",
+        "deadline": "2026-11-08T00:00:00Z",
+        "remediations": [
+          {
+            "uuid": "ae31fe40-2a26-5411-9b36-c98638a980bc",
+            "lifecycle": "planned",
+            "title": "Planned remediation",
+            "description": "Perform and document a point-in-time restore to an isolated server; record actual recovery time against the 8-hour RTO.",
+            "tasks": [
+              {
+                "uuid": "54728a48-2c6c-56c1-93ab-8f5b70ea7cb7",
+                "type": "milestone",
+                "title": "Restore test executed and results documented",
+                "timing": {
+                  "on-date": {
+                    "date": "2026-11-08T00:00:00Z"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "91a689ba-97d4-50be-99e1-cc41f816861e"
+          }
+        ]
+      },
+      {
+        "uuid": "a7d346d8-ab9a-55bd-a2a3-eb28a1f37182",
+        "title": "Incident reporting to CISA not exercised",
+        "description": "The external reporting procedure exists only as a draft and has not been tested in an exercise.",
+        "statement": "Affects IR-6. Risk rated moderate.",
+        "props": [
+          {
+            "name": "risk-level",
+            "value": "moderate"
+          }
+        ],
+        "status": "open",
+        "deadline": "2027-01-31T00:00:00Z",
+        "remediations": [
+          {
+            "uuid": "732a0def-e32d-5374-9c55-00cf5dee3091",
+            "lifecycle": "planned",
+            "title": "Planned remediation",
+            "description": "Finalize the reporting procedure with the agency SOC and run a tabletop exercise that includes the reporting step.",
+            "tasks": [
+              {
+                "uuid": "d60840d1-6693-5b8c-ac80-ae6d2c011b68",
+                "type": "milestone",
+                "title": "Procedure approved by agency SOC",
+                "timing": {
+                  "on-date": {
+                    "date": "2026-12-01T00:00:00Z"
+                  }
+                }
+              },
+              {
+                "uuid": "9d13c2b8-c793-5647-bd33-8843268670a2",
+                "type": "milestone",
+                "title": "Tabletop exercise completed with after-action report",
+                "timing": {
+                  "on-date": {
+                    "date": "2027-01-31T00:00:00Z"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "9991bd54-7757-5e90-b097-848e3f551d4b"
+          }
+        ]
+      },
+      {
+        "uuid": "2787d2bb-c68b-571f-a9a4-70f185a07006",
+        "title": "No dependency or container scanning in the pipeline",
+        "description": "Third-party libraries and container images are not scanned before deployment.",
+        "statement": "Affects RA-5. Risk rated moderate.",
+        "props": [
+          {
+            "name": "risk-level",
+            "value": "moderate"
+          }
+        ],
+        "status": "open",
+        "deadline": "2027-02-15T00:00:00Z",
+        "remediations": [
+          {
+            "uuid": "2b1c6540-8beb-59f8-aaa4-0131ee99d32d",
+            "lifecycle": "planned",
+            "title": "Planned remediation",
+            "description": "Add software composition analysis and image scanning as required pipeline checks that block Critical findings.",
+            "tasks": [
+              {
+                "uuid": "532a95d5-e595-5541-b786-3b8d69d14ed8",
+                "type": "milestone",
+                "title": "Scanning enabled in report-only mode",
+                "timing": {
+                  "on-date": {
+                    "date": "2026-12-15T00:00:00Z"
+                  }
+                }
+              },
+              {
+                "uuid": "5cf766e8-5062-5a1f-90a3-3904d77eb70f",
+                "type": "milestone",
+                "title": "Blocking enforced for Critical findings",
+                "timing": {
+                  "on-date": {
+                    "date": "2027-02-15T00:00:00Z"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "7d489ba8-499f-53d5-9b3a-86597a6e054e"
+          }
+        ]
+      },
+      {
+        "uuid": "7aa54ed7-2da5-5b03-a2b5-bd52b5c0481e",
+        "title": "Behavior analytics not enabled",
+        "description": "Detection relies on scheduled rules only; anomalous but rule-evading behavior may go unnoticed.",
+        "statement": "Affects SI-4. Risk rated low.",
+        "props": [
+          {
+            "name": "risk-level",
+            "value": "low"
+          }
+        ],
+        "status": "open",
+        "deadline": "2027-03-31T00:00:00Z",
+        "remediations": [
+          {
+            "uuid": "1b2c6156-0206-540e-949f-561a86d4ac4c",
+            "lifecycle": "planned",
+            "title": "Planned remediation",
+            "description": "Enable Sentinel UEBA for Entra ID and Azure Activity data and add anomaly-based analytics to the daily review.",
+            "tasks": [
+              {
+                "uuid": "ddc18a0f-d4ee-543e-abbc-c7c8873e82cf",
+                "type": "milestone",
+                "title": "UEBA enabled and baseline period complete",
+                "timing": {
+                  "on-date": {
+                    "date": "2027-03-31T00:00:00Z"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "2106a475-c0ef-54e5-9d04-9d50e51c6bf5"
+          }
+        ]
+      }
+    ],
+    "poam-items": [
+      {
+        "uuid": "6096bab6-074a-585a-b07e-72ea2581b7c8",
+        "title": "Audit log retention below one-year requirement",
+        "description": "Log Analytics retains logs for 90 days; the agency requires one year of retention for audit records.",
+        "props": [
+          {
+            "name": "POAM-ID",
+            "ns": "https://fedramp.gov/ns/oscal",
+            "value": "POAM-001"
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "1706671c-f238-5042-b838-8d2473986a6e"
+          }
+        ],
+        "related-risks": [
+          {
+            "risk-uuid": "9048b5cd-7097-5679-9905-8333751fff7b"
+          }
+        ],
+        "remarks": "Controls: AU-11. Owner role: isso."
+      },
+      {
+        "uuid": "cf958917-f02a-51e7-9c91-f7ccc5f673a3",
+        "title": "No automated configuration drift detection",
+        "description": "Resources can be changed in the portal without detection until the next deployment overwrites them.",
+        "props": [
+          {
+            "name": "POAM-ID",
+            "ns": "https://fedramp.gov/ns/oscal",
+            "value": "POAM-002"
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "cad363e9-a7ad-5a0a-95ff-d98929554666"
+          }
+        ],
+        "related-risks": [
+          {
+            "risk-uuid": "58614b22-838f-56dd-8039-4dca35835410"
+          }
+        ],
+        "remarks": "Controls: CM-6. Owner role: system-administrator."
+      },
+      {
+        "uuid": "e0d7c147-15ff-58e8-872d-1f9c5ed6c1f2",
+        "title": "Backup restore never tested",
+        "description": "Database backups are enabled but recovery has not been demonstrated, so the recovery time objective is unverified.",
+        "props": [
+          {
+            "name": "POAM-ID",
+            "ns": "https://fedramp.gov/ns/oscal",
+            "value": "POAM-003"
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "91a689ba-97d4-50be-99e1-cc41f816861e"
+          }
+        ],
+        "related-risks": [
+          {
+            "risk-uuid": "ce39d573-53d0-5c83-a847-ceec07dc04b9"
+          }
+        ],
+        "remarks": "Controls: CP-9. Owner role: system-administrator."
+      },
+      {
+        "uuid": "b980b05e-19fe-54fe-828e-e520b10ddc9f",
+        "title": "Incident reporting to CISA not exercised",
+        "description": "The external reporting procedure exists only as a draft and has not been tested in an exercise.",
+        "props": [
+          {
+            "name": "POAM-ID",
+            "ns": "https://fedramp.gov/ns/oscal",
+            "value": "POAM-004"
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "9991bd54-7757-5e90-b097-848e3f551d4b"
+          }
+        ],
+        "related-risks": [
+          {
+            "risk-uuid": "a7d346d8-ab9a-55bd-a2a3-eb28a1f37182"
+          }
+        ],
+        "remarks": "Controls: IR-6. Owner role: isso."
+      },
+      {
+        "uuid": "e7014dd1-8ae9-532d-9eb1-b332709aed88",
+        "title": "No dependency or container scanning in the pipeline",
+        "description": "Third-party libraries and container images are not scanned before deployment.",
+        "props": [
+          {
+            "name": "POAM-ID",
+            "ns": "https://fedramp.gov/ns/oscal",
+            "value": "POAM-005"
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "7d489ba8-499f-53d5-9b3a-86597a6e054e"
+          }
+        ],
+        "related-risks": [
+          {
+            "risk-uuid": "2787d2bb-c68b-571f-a9a4-70f185a07006"
+          }
+        ],
+        "remarks": "Controls: RA-5. Owner role: system-administrator."
+      },
+      {
+        "uuid": "aa4bf396-3d58-5fd9-9351-490108918c58",
+        "title": "Behavior analytics not enabled",
+        "description": "Detection relies on scheduled rules only; anomalous but rule-evading behavior may go unnoticed.",
+        "props": [
+          {
+            "name": "POAM-ID",
+            "ns": "https://fedramp.gov/ns/oscal",
+            "value": "POAM-006"
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "2106a475-c0ef-54e5-9d04-9d50e51c6bf5"
+          }
+        ],
+        "related-risks": [
+          {
+            "risk-uuid": "7aa54ed7-2da5-5b03-a2b5-bd52b5c0481e"
+          }
+        ],
+        "remarks": "Controls: SI-4. Owner role: isso."
+      }
+    ]
+  }
+}
